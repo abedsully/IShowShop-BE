@@ -5,7 +5,8 @@ import lombok.*;
 
 import java.sql.Blob;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

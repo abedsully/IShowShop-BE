@@ -1,5 +1,6 @@
 package com.abedsully.IShowShop.service.product;
 
+import com.abedsully.IShowShop.dto.ProductDto;
 import com.abedsully.IShowShop.model.Product;
 import com.abedsully.IShowShop.request.AddProductRequest;
 import com.abedsully.IShowShop.request.UpdateProductRequest;
@@ -18,4 +19,8 @@ public interface IProductService {
     List<Product> getProductsByName(String name);
     List<Product> getProductsByBrandAndName(String category, String name);
     Long countProductsByBrandAndName(String brand, String name);
+
+    List<ProductDto> getConvertedProducts(List<Product> products);
+
+    ProductDto convertToDto(Product product);
 }

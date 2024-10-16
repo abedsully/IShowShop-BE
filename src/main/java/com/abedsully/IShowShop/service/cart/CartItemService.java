@@ -1,5 +1,6 @@
 package com.abedsully.IShowShop.service.cart;
 
+import com.abedsully.IShowShop.exceptions.ResourceNotFoundException;
 import com.abedsully.IShowShop.model.Cart;
 import com.abedsully.IShowShop.model.CartItem;
 import com.abedsully.IShowShop.model.Product;
@@ -8,6 +9,8 @@ import com.abedsully.IShowShop.repository.CartRepository;
 import com.abedsully.IShowShop.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +46,37 @@ public class CartItemService implements ICardItemService {
 
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
-
+        Cart cart = cartService.getCartById(cartId);
+        CartItem itemToRemove = getCartItem(cartId, productId);
+        cart.removeItem(itemToRemove);
+        cartRepository.save(cart);
     }
 
     @Override
     public void updateItemQuantity(Long cartId, Long productId, int quantity) {
+        Cart cart = cartService.getCartById(cartId);
+        cart.getCartItems()
+                .stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .ifPresent(cartItem -> {
+                    cartItem.setQuantity(quantity);
+                    cartItem.setUnitPrice(cartItem.getProduct().getPrice());
+                    cartItem.setTotalPrice();
+                });
+        BigDecimal totalAmount = cart.getTotalAmount();
+        cart.setTotalAmount(totalAmount);
 
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public CartItem getCartItem(Long cartId, Long productId) {
+        Cart cart = cartService.getCartById(cartId);
+        return cart.getCartItems()
+                .stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 }

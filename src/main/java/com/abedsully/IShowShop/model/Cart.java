@@ -17,7 +17,7 @@ public class Cart {
     private Long id;
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
 
     public void addItem(CartItem item) {
@@ -33,12 +33,12 @@ public class Cart {
     }
 
     private void updateTotalAmount() {
-        this.totalAmount = cartItems.stream().map(cartItem -> {
-            BigDecimal unitPrice = cartItem.getUnitPrice();
+        this.totalAmount = cartItems.stream().map(item -> {
+            BigDecimal unitPrice = item.getUnitPrice();
             if (unitPrice == null) {
                 return BigDecimal.ZERO;
             }
-            return unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            return unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
         }).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

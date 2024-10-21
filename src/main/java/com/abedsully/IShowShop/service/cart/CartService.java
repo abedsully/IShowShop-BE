@@ -4,6 +4,7 @@ import com.abedsully.IShowShop.exceptions.ResourceNotFoundException;
 import com.abedsully.IShowShop.model.Cart;
 import com.abedsully.IShowShop.repository.CartItemRepository;
 import com.abedsully.IShowShop.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class CartService implements ICartService {
     }
 
     @Override
+    @Transactional
     public void clearClart(Long id) {
         Cart cart = getCartById(id);
         cartItemRepository.deleteAllByCartId(id);
@@ -48,5 +50,10 @@ public class CartService implements ICartService {
         Long newCartId = cartIdGenerator.incrementAndGet();
         newCart.setId(newCartId);
         return cartRepository.save(newCart).getId();
+    }
+
+    @Override
+    public Cart getByUserId(Long userId) {
+        return cartRepository.findByUserId(userId);
     }
 }

@@ -53,7 +53,7 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Cart getByUserId(Long userId) {
+    public Cart getCartByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
     }
 }

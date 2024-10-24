@@ -15,11 +15,12 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long orderId;
     private LocalDate orderDate;
     private BigDecimal totalAmount;
 

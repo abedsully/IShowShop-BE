@@ -9,7 +9,6 @@ import com.abedsully.IShowShop.model.OrderItem;
 import com.abedsully.IShowShop.model.Product;
 import com.abedsully.IShowShop.repository.OrderRepository;
 import com.abedsully.IShowShop.repository.ProductRepository;
-import com.abedsully.IShowShop.service.cart.CartService;
 import com.abedsully.IShowShop.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
@@ -85,7 +85,8 @@ public class OrderService implements IOrderService{
         return orders.stream().map(this::convertToDto).toList();
     }
 
-    private OrderDto convertToDto(Order order) {
+    @Override
+    public OrderDto convertToDto(Order order) {
         return modelMapper.map(order, OrderDto.class);
     }
 }

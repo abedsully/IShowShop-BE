@@ -1,5 +1,6 @@
 package com.abedsully.IShowShop.service.user;
 
+import com.abedsully.IShowShop.dto.UserDto;
 import com.abedsully.IShowShop.exceptions.AlreadyExistException;
 import com.abedsully.IShowShop.exceptions.ResourceNotFoundException;
 import com.abedsully.IShowShop.model.User;
@@ -7,6 +8,7 @@ import com.abedsully.IShowShop.repository.UserRepository;
 import com.abedsully.IShowShop.request.CreateUserRequest;
 import com.abedsully.IShowShop.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,8 +16,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
-
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) {
@@ -52,5 +54,10 @@ public class UserService implements IUserService {
                 .ifPresentOrElse(userRepository::delete, () -> {
                     throw new ResourceNotFoundException("User not found");
                 });
+    }
+
+    @Override
+    public UserDto convertUserToDTO(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 }

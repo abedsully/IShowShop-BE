@@ -2,6 +2,7 @@ package com.abedsully.IShowShop.service.product;
 
 import com.abedsully.IShowShop.dto.ImageDto;
 import com.abedsully.IShowShop.dto.ProductDto;
+import com.abedsully.IShowShop.exceptions.AlreadyExistException;
 import com.abedsully.IShowShop.exceptions.ProductNotFoundException;
 import com.abedsully.IShowShop.model.Category;
 import com.abedsully.IShowShop.model.Image;
@@ -26,13 +27,17 @@ public class ProductService implements IProductService {
     private final ImageRepository imageRepository;
     private final ModelMapper modelMapper;
 
-
     @Override
     public Product addProduct(AddProductRequest request) {
         // Checking if category is found in the Database
         // If Yes, set as new product category
         // If No, save as new category
         // Then set as new product category
+
+        if(productExists(request.getName(), request.getBrand())) {
+            throw new AlreadyExistException(request.getBrand() + " " + request.getName() + " already exists");
+        }
+
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -41,6 +46,10 @@ public class ProductService implements IProductService {
 
         request.setCategory(category);
         return productRepository.save(createProduct(request, category));
+    }
+
+    private boolean productExists(String name, String brand) {
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {

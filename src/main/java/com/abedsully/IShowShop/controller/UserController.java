@@ -1,5 +1,6 @@
 package com.abedsully.IShowShop.controller;
 
+import com.abedsully.IShowShop.dto.UserDto;
 import com.abedsully.IShowShop.exceptions.AlreadyExistException;
 import com.abedsully.IShowShop.model.User;
 import com.abedsully.IShowShop.request.CreateUserRequest;
@@ -20,11 +21,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class UserController {
     private final IUserService userService;
 
-    @GetMapping("{id}")
-    public ResponseEntity<ApiResponse> getUserById(Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getUserById(@PathVariable Long id) {
         try {
             User user = userService.getUserById(id);
-            return ResponseEntity.ok(new ApiResponse("Success", user));
+            UserDto userDto = userService.convertUserToDTO(user);
+            return ResponseEntity.ok(new ApiResponse("Success", userDto));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
@@ -35,7 +37,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest req) {
         try {
             User user = userService.createUser(req);
-            return ResponseEntity.ok(new ApiResponse("Create User Success!", user));
+            UserDto userDto = userService.convertUserToDTO(user);
+            return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
         } catch (AlreadyExistException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse("An error occured:", e.getMessage()));
         }
@@ -45,7 +48,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateUserRequest req, @PathVariable Long userId) {
         try {
             User user = userService.updateUser(req, userId);
-            return ResponseEntity.ok(new ApiResponse("User updated successfully", user));
+            UserDto userDto = userService.convertUserToDTO(user);
+            return ResponseEntity.ok(new ApiResponse("User updated successfully", userDto));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("An error occured: ", e.getMessage()));
         }

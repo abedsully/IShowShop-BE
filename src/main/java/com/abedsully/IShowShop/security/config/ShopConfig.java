@@ -1,4 +1,4 @@
-package com.abedsully.IShowShop.config;
+package com.abedsully.IShowShop.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
